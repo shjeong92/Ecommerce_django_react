@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap";
 import Rating from './Rating'
 import { Link } from 'react-router-dom';
 
-const numberWithCommas = (x) => {
+export const numberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 const Product = ({ product }) => {
