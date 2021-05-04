@@ -6,7 +6,7 @@ import products from '../products';
 import { numberWithCommas } from '../components/Product';
 
 const ProductScreen = ({ match }) => {
-    const product = products.find((p) => p._id == match.params.id)
+    const product = products.find((p) => p._id === match.params.id)
     return (
         <div>
             <Link to="/" className="btn btn-light my-3">Go Back</Link>

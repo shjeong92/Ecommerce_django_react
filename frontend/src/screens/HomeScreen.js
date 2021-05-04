@@ -5,7 +5,7 @@ import Product from '../components/Product'
 const HoomScreen = () => {
     return (
         <div>
-            <h1>최신 제품</h1>
+            <h1>MD's Pick</h1>
             <Row>
                 {products.map(product => (
                     <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
