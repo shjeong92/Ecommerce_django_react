@@ -1,33 +1,38 @@
-import React, {useState, useEffect} from 'react'
-import axios from 'axios'
-// import products from '../products'
-import { Row, Col } from 'react-bootstrap';
-import Product from '../components/Product'
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../actions/productActions";
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { Row, Col } from "react-bootstrap";
+import Product from "../components/Product";
 const HoomScreen = () => {
-    const [products, setProducts] = useState([])
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const {data} = await axios.get('/api/products/')
-            console.log(data);
-            setProducts(data)
-        } 
-        fetchProducts();
-        
-    
-    }, [])
-    return (
-        <div>
-            <h1>MD's Pick</h1>
-            <Row>
-                {products.map(product => (
-                    <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                        
-                        <Product product={product}></Product>
-                    </Col>
-                ))}
-            </Row>
-        </div>
-    )
-}
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.productList);
 
-export default HoomScreen
+  const { error, loading, products } = productList;
+  
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
+
+  return (
+    <div>
+      <h1>MD's Pick</h1>
+      {loading ? (
+        <Loader/>
+      ) : error ? (
+        <Message variant='danger'>{error}</Message>
+      ) : (
+        <Row>
+          {products.map((product) => (
+            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Product product={product}></Product>
+            </Col>
+          ))}
+        </Row>
+      )}
+    </div>
+  );
+};
+
+export default HoomScreen;
