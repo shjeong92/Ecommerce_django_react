@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 
 export const numberWithCommas = (x) => {
-
   return x? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null;
 };
 const Product = ({ product }) => {
