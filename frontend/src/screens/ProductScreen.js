@@ -60,7 +60,7 @@ const ProductScreen = ({ match, history }) => {
               </ListGroup.Item>
 
               <ListGroup.Item>
-                Price: {numberWithCommas(product.price)}
+                Price: {numberWithCommas(product.price)} ₩ 
               </ListGroup.Item>
               <ListGroup.Item>
                 Description: ${product.description}
@@ -75,7 +75,7 @@ const ProductScreen = ({ match, history }) => {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>{numberWithCommas(product.price)}₩</strong>
+                      <strong>{numberWithCommas(product.price*qty)}₩</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -108,8 +108,9 @@ const ProductScreen = ({ match, history }) => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                )}
 
+                )}
+                              
                 <ListGroup.Item>
                   <Button
                     onClick={addToCartHandler}
