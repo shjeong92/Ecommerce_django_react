@@ -1,18 +1,27 @@
-import React, { useEffect } from "react";
+import axios from 'axios'
+import React, { useState, useEffect } from "react";
 import {  Row, Col, ListGroup, Card, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { numberWithCommas } from "../components/Product";
-import {getOrderDetails } from "../actions/orderAction";
+import {getOrderDetails, payOrder } from "../actions/orderActions";
+import { PayPalButton } from "react-paypal-button-v2";
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 const OrderScreen = ({ match }) => {
   const orderId = match.params.id;
+  const dispatch = useDispatch();
+  const [currency, setCurrency] = useState(1)
+  const [sdkReady, setSdkReady] = useState(false)
+
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, error, loading } = orderDetails;
 
-  const dispatch = useDispatch();
+  const orderPay = useSelector(state => state.orderPay)
+  const { loading: loadingPay, success: successPay  } = orderPay;
+  
 
   if (!loading && !error) {
     order.itemsPrice = order.orderItems.reduce(
@@ -20,12 +29,40 @@ const OrderScreen = ({ match }) => {
       0
     );
   }
-
-  useEffect(() => {
-    if (!order || order._id !== Number(orderId)) {
-      dispatch(getOrderDetails(orderId));
+  // AXhsqH7TPynD38tmyhHUlFi1vtwm2kvOxUwb3ziaGK_h1I9v8FHqPo96aMUucPiOiODB180tyiOX0Xdk
+  const addPayPalScript = () => {
+    const script = document.createElement('script')
+    script.type ='text/javascript'
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AXhsqH7TPynD38tmyhHUlFi1vtwm2kvOxUwb3ziaGK_h1I9v8FHqPo96aMUucPiOiODB180tyiOX0Xdk'
+    script.async = true
+    script.onload = () => {
+      setSdkReady(true)
     }
-  }, [order, orderId]);
+    document.body.appendChild(script)
+  }
+  useEffect(() => {
+    const getCurrency = async () => {
+      const currency = await axios.get('https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=81ca22f58c9ca51f6d04')
+      setCurrency(currency.data.USD_KRW)
+    }
+    getCurrency()
+  },[])
+  useEffect(() => {
+    if (!order || successPay || order._id   !== Number(orderId)) {
+      dispatch({type: ORDER_PAY_RESET})
+      dispatch(getOrderDetails(orderId));
+    } else if(!order.isPaid) {
+      if(!window.paypal) {
+        addPayPalScript()
+      } else {
+        setSdkReady(true)
+      }
+    }
+  }, [order, orderId, dispatch, successPay]);
+
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult))
+  }
 
   return loading ? (
       <Loader/>
@@ -142,6 +179,18 @@ const OrderScreen = ({ match }) => {
                   <Col className="m">{order.itemsPrice} ₩</Col>
                 </Row>
               </ListGroup.Item>
+
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader/>}
+
+                  {!sdkReady ? (<Loader/>) :
+                  (<PayPalButton 
+                    amount={(order.itemsPrice/currency).toFixed(2)}
+                    onSuccess={successPaymentHandler}
+                  />)}
+                </ListGroup.Item>
+              )}
 
             </ListGroup>
           </Card>

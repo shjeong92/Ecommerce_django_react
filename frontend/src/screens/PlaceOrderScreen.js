@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { numberWithCommas } from "../components/Product";
-import { createOrder } from "../actions/orderAction";
+import { createOrder } from "../actions/orderActions";
 import { ORDER_CREATE_RESET} from '../constants/orderConstants';
 const PlaceOrderScreen = ({ history }) => {
   const orderCreate = useSelector((state) => state.orderCreate);
