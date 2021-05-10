@@ -1,27 +1,26 @@
-import axios from 'axios'
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import {  Row, Col, ListGroup, Card, Image } from "react-bootstrap";
+import { Row, Col, ListGroup, Card, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { numberWithCommas } from "../components/Product";
-import {getOrderDetails, payOrder } from "../actions/orderActions";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
 import { PayPalButton } from "react-paypal-button-v2";
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 const OrderScreen = ({ match }) => {
   const orderId = match.params.id;
   const dispatch = useDispatch();
-  const [currency, setCurrency] = useState(1)
-  const [sdkReady, setSdkReady] = useState(false)
+  const [currency, setCurrency] = useState(1);
+  const [sdkReady, setSdkReady] = useState(false);
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, error, loading } = orderDetails;
 
-  const orderPay = useSelector(state => state.orderPay)
-  const { loading: loadingPay, success: successPay  } = orderPay;
-  
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
 
   if (!loading && !error) {
     order.itemsPrice = order.orderItems.reduce(
@@ -31,53 +30,61 @@ const OrderScreen = ({ match }) => {
   }
   // AXhsqH7TPynD38tmyhHUlFi1vtwm2kvOxUwb3ziaGK_h1I9v8FHqPo96aMUucPiOiODB180tyiOX0Xdk
   const addPayPalScript = () => {
-    const script = document.createElement('script')
-    script.type ='text/javascript'
-    script.src = 'https://www.paypal.com/sdk/js?client-id=AXhsqH7TPynD38tmyhHUlFi1vtwm2kvOxUwb3ziaGK_h1I9v8FHqPo96aMUucPiOiODB180tyiOX0Xdk'
-    script.async = true
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src =
+      "https://www.paypal.com/sdk/js?client-id=AXhsqH7TPynD38tmyhHUlFi1vtwm2kvOxUwb3ziaGK_h1I9v8FHqPo96aMUucPiOiODB180tyiOX0Xdk";
+    script.async = true;
     script.onload = () => {
-      setSdkReady(true)
-    }
-    document.body.appendChild(script)
-  }
+      setSdkReady(true);
+    };
+    document.body.appendChild(script);
+  };
   useEffect(() => {
     const getCurrency = async () => {
-      const currency = await axios.get('https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=81ca22f58c9ca51f6d04')
-      setCurrency(currency.data.USD_KRW)
-    }
-    getCurrency()
-  },[])
+      const currency = await axios.get(
+        "https://free.currconv.com/api/v7/convert?q=USD_KRW&compact=ultra&apiKey=81ca22f58c9ca51f6d04"
+      );
+      setCurrency(currency.data.USD_KRW);
+    };
+    getCurrency();
+  }, []);
   useEffect(() => {
-    if (!order || successPay || order._id   !== Number(orderId)) {
-      dispatch({type: ORDER_PAY_RESET})
+    if (!order || successPay || order._id !== Number(orderId)) {
+      dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
-    } else if(!order.isPaid) {
-      if(!window.paypal) {
-        addPayPalScript()
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript();
       } else {
-        setSdkReady(true)
+        setSdkReady(true);
       }
     }
   }, [order, orderId, dispatch, successPay]);
 
   const successPaymentHandler = (paymentResult) => {
-    dispatch(payOrder(orderId, paymentResult))
-  }
+    dispatch(payOrder(orderId, paymentResult));
+  };
 
   return loading ? (
-      <Loader/>
+    <Loader />
   ) : error ? (
-      <Message variant='danger'>{error}</Message>
+    <Message variant="danger">{error}</Message>
   ) : (
     <div>
-      <h1>Order: {order._id} </h1>
+      <h1>Order# {order._id} </h1>
       <Row>
-        <Col md={8}>
+        <Col md={7}>
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>Shipping To</h2>
-              <p><strong>Name: {order.user.name}</strong></p>
-              <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
+              <p>
+                <strong>Name: {order.user.name}</strong>
+              </p>
+              <p>
+                <strong>Email: </strong>
+                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+              </p>
               <p>
                 <strong>Shipping: </strong>
                 {order.shippingAddress.address}, {order.shippingAddress.city},
@@ -85,10 +92,12 @@ const OrderScreen = ({ match }) => {
                 {order.shippingAddress.postalCode},{"  "}
                 {order.shippingAddress.country}
               </p>
-              {order.isDelivered? (
-                  <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+              {order.isDelivered ? (
+                <Message variant="success">
+                  Delivered on {order.deliveredAt}
+                </Message>
               ) : (
-                <Message variant='warning'>Not Delivered</Message>
+                <Message variant="warning">Not Delivered</Message>
               )}
             </ListGroup.Item>
 
@@ -98,10 +107,10 @@ const OrderScreen = ({ match }) => {
                 <strong>Method: </strong>
                 {order.paymentMethod}
               </p>
-              {order.isPaid? (
-                  <Message variant='success'>Paid on {order.paidAt}</Message>
+              {order.isPaid ? (
+                <Message variant="success">Paid on {order.paidAt}</Message>
               ) : (
-                <Message variant='warning'>Not Paid</Message>
+                <Message variant="warning">Not Paid</Message>
               )}
             </ListGroup.Item>
 
@@ -127,7 +136,7 @@ const OrderScreen = ({ match }) => {
                             {item.name}
                           </Link>
                         </Col>
-                        <Col md={4}>
+                        <Col md={6}>
                           {item.qty} X {numberWithCommas(item.price)}₩ ={" "}
                           {numberWithCommas(item.qty * item.price)}₩
                         </Col>
@@ -139,7 +148,7 @@ const OrderScreen = ({ match }) => {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={4}>
+        <Col md={5}>
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>
@@ -182,16 +191,18 @@ const OrderScreen = ({ match }) => {
 
               {!order.isPaid && (
                 <ListGroup.Item>
-                  {loadingPay && <Loader/>}
+                  {loadingPay && <Loader />}
 
-                  {!sdkReady ? (<Loader/>) :
-                  (<PayPalButton 
-                    amount={(order.itemsPrice/currency).toFixed(2)}
-                    onSuccess={successPaymentHandler}
-                  />)}
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton
+                      amount={(order.itemsPrice / currency).toFixed(2)}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
                 </ListGroup.Item>
               )}
-
             </ListGroup>
           </Card>
         </Col>
