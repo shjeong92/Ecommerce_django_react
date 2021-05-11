@@ -40,7 +40,7 @@ const UserEditScreen = ({ match, history }) => {
         setIsAdmin(user.isAdmin);
       }
     }
-  }, [user, userId, successUpdate, history]);
+  }, [user, userId, successUpdate, history, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ const UserEditScreen = ({ match, history }) => {
               <Form.Check
                 type="checkbox"
                 label="Is Admin"
-                check={isAdmin}
+                checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
               ></Form.Check>
             </Form.Group>

@@ -20,7 +20,7 @@ const UserListScreen = ({ history }) => {
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(listUsers());
+      dispatch(listUsers(userInfo._id));
     } else {
       history.push("/login");
     }

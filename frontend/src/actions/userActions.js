@@ -124,7 +124,6 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.get(`/api/users/${id}/`, config);
-    console.log("id= ", id);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -185,7 +184,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   }
 };
 
-export const listUsers = () => async (dispatch, getState) => {
+export const listUsers = (id) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_LIST_REQUEST,
@@ -201,7 +200,7 @@ export const listUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(`/api/users/`, config);
+    const { data } = await axios.get(`/api/users/list/${id}`, config);
 
     dispatch({
       type: USER_LIST_SUCCESS,
