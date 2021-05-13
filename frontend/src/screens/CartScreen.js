@@ -11,7 +11,7 @@ import {
   Card,
 } from "react-bootstrap";
 import Message from "../components/Message";
-import { addToCart, removeFromCart} from "../actions/cartActions";
+import { addToCart, removeFromCart } from "../actions/cartActions";
 import { numberWithCommas } from "../components/Product";
 const CartScreen = ({ match, location, history }) => {
   const productId = match.params.id;
@@ -27,15 +27,15 @@ const CartScreen = ({ match, location, history }) => {
     }
   }, [dispatch, productId, qty]);
   const removeFromCartHandler = (id) => {
-    dispatch(removeFromCart(id))
+    dispatch(removeFromCart(id));
   };
   const checkoutHandler = () => {
-      history.push('/login?redirect=shipping')
-  }
+    history.push("/login?redirect=shipping");
+  };
   return (
     <Row>
       <Col md={8}>
-        <h1>Shopping Cart</h1>
+        <h3>장바구니</h3>
         {cartItems.length === 0 ? (
           <Message variant="info">
             Your cart is empty <Link to="/">Go back</Link>
@@ -63,7 +63,9 @@ const CartScreen = ({ match, location, history }) => {
                       }
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
-                        <option value={x + 1}>{x + 1}</option>
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
                       ))}
                     </Form.Control>
                   </Col>
@@ -103,7 +105,7 @@ const CartScreen = ({ match, location, history }) => {
               disabled={cartItems.length === 0}
               onClick={checkoutHandler}
             >
-              Proceed To Checkout
+              확인
             </Button>
           </ListGroup.Item>
         </Card>

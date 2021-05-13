@@ -109,7 +109,7 @@ const ProfileScreen = ({ history }) => {
             ></Form.Control>
           </Form.Group>
           <Button type="submit" variant="primary">
-            Update
+            업데이트
           </Button>
         </Form>
       </Col>
@@ -145,7 +145,7 @@ const ProfileScreen = ({ history }) => {
                   </td>
                   <td>
                     <LinkContainer to={`/order/${order._id}`}>
-                      <Button className="btn-sm">Details</Button>
+                      <Button className="btn-sm">상세정보</Button>
                     </LinkContainer>
                   </td>
                 </tr>

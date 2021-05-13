@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -17,12 +18,32 @@ def getProducts(request):
     print('query :', query)
     if query == None:
         query = ''
+
     products = Product.objects.filter(name__icontains=query)
+    
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 5)
+
+    try:
+        products = paginator.page(page)
+    
+    except PageNotAnInteger:
+        '''If Input value is not an integer, go to page #1'''
+        products = paginator.page(1)
+    except EmptyPage:
+        '''If page with the input value is not exists, send user to the last page'''
+        products = paginator.page(paginator.num_pages)
+    if page == None:
+        page = 1
+    page = int(page)
+    serializer = ProductSerializer(products, many=True)
+    return Response({'products': serializer.data, 'page': page , 'pages' : paginator.num_pages})
+ 
+@api_view(['GET'])
+def getTopProducts(request):
+    products = Product.objects.filter(rating__gt=4).order_by('-rating')[0:5]
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
-
-
-
 
 @api_view(['GET'])
 def getProduct(request, pk):

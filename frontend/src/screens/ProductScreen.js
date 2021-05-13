@@ -93,10 +93,11 @@ const ProductScreen = ({ match, history }) => {
                 </ListGroup.Item>
 
                 <ListGroup.Item>
-                  Price: {numberWithCommas(product.price)} ₩
+                  <strong> 금액 (VAT 포함) </strong> :{" "}
+                  {numberWithCommas(product.price)} ₩
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  Description: ${product.description}
+                  <strong> 제품 소개 </strong>: {product.description}
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -106,7 +107,7 @@ const ProductScreen = ({ match, history }) => {
                 <ListGroup variant="flush">
                   <ListGroup.Item>
                     <Row>
-                      <Col>Price:</Col>
+                      <Col>총 금액 :</Col>
                       <Col>
                         <strong>
                           {numberWithCommas(product.price * qty)}₩
@@ -116,16 +117,20 @@ const ProductScreen = ({ match, history }) => {
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
-                      <Col>Status</Col>
-                      <Col>
-                        {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                      <Col>남은 수량 :</Col>
+                      <Col
+                        style={!product.countInStock ? { color: "red" } : null}
+                      >
+                        {product.countInStock > 0
+                          ? `${product.countInStock} 개 남음`
+                          : "품 절"}
                       </Col>
                     </Row>
                   </ListGroup.Item>
                   {product.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
-                        <Col>Qty</Col>
+                        <Col>갯수</Col>
                         <Col xs="auto" className="my-1">
                           <Form.Control
                             as="select"
@@ -134,7 +139,9 @@ const ProductScreen = ({ match, history }) => {
                           >
                             {[...Array(product.countInStock).keys()].map(
                               (x) => (
-                                <option value={x + 1}>{x + 1}</option>
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
                               )
                             )}
                           </Form.Control>
@@ -150,7 +157,7 @@ const ProductScreen = ({ match, history }) => {
                       disabled={product.countInStock === 0}
                       type="button"
                     >
-                      Add to Cart
+                      장바구니에 담기
                     </Button>
                   </ListGroup.Item>
                 </ListGroup>
@@ -175,7 +182,7 @@ const ProductScreen = ({ match, history }) => {
                   );
                 })}
                 <ListGroup.Item>
-                  <h4>Write a review</h4>
+                  <h4>리뷰 남기기</h4>
                   {loadingProductReview && <Loader />}
                   {successProductReview && (
                     <Message variant="success">Review Submitted</Message>
@@ -201,7 +208,7 @@ const ProductScreen = ({ match, history }) => {
                         </Form.Control>
                       </Form.Group>
                       <Form.Group>
-                        <Form.Label>Review</Form.Label>
+                        <Form.Label>리뷰</Form.Label>
                         <Form.Control
                           as="textarea"
                           row="5"
@@ -214,7 +221,7 @@ const ProductScreen = ({ match, history }) => {
                         type="submit"
                         variant="primary"
                       >
-                        Submit
+                        등록
                       </Button>
                     </Form>
                   ) : (
