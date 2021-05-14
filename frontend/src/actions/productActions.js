@@ -6,6 +6,7 @@ import {
   PRODUCT_DETAILS_REQUEST,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_DETAILS_FAIL,
+  PRODUCT_DETAILS_RESET,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAIL,
@@ -43,6 +44,7 @@ export const listProducts =
 
 export const listTopProducts = () => async (dispatch) => {
   try {
+    dispatch({ type: PRODUCT_DETAILS_RESET });
     dispatch({ type: PRODUCT_TOP_REQUEST });
     const { data } = await axios.get(`/api/products/top`);
     dispatch({ type: PRODUCT_TOP_SUCCESS, payload: data });

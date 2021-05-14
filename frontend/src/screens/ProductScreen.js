@@ -49,8 +49,6 @@ const ProductScreen = ({ match, history }) => {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
     dispatch(listProductDetails(match.params.id));
-
-    return dispatch({ type: PRODUCT_DETAILS_RESET });
   }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
