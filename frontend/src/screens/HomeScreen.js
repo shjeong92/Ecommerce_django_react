@@ -7,6 +7,7 @@ import Paginate from "../components/Paginate";
 import { Row, Col } from "react-bootstrap";
 import ProductCarousel from "../components/ProductCarousel";
 import Product from "../components/Product";
+
 const HoomScreen = ({ history }) => {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);

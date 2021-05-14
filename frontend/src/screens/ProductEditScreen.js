@@ -49,6 +49,8 @@ const ProductEditScreen = ({ match, history }) => {
         setDescription(product.description);
       }
     }
+
+    return console.log("cleaning");
   }, [dispatch, product, productId, history, successUpdate]);
 
   const submitHandler = (e) => {

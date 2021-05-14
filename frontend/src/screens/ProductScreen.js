@@ -4,7 +4,10 @@ import {
   listProductDetails,
   createProductReview,
 } from "../actions/productActions";
-import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
+import {
+  PRODUCT_CREATE_REVIEW_RESET,
+  PRODUCT_DETAILS_RESET,
+} from "../constants/productConstants";
 import { Link } from "react-router-dom";
 import {
   Row,
@@ -46,6 +49,8 @@ const ProductScreen = ({ match, history }) => {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
     dispatch(listProductDetails(match.params.id));
+
+    return dispatch({ type: PRODUCT_DETAILS_RESET });
   }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
