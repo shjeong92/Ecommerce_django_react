@@ -6,7 +6,6 @@ import {
 } from "../actions/productActions";
 import {
   PRODUCT_CREATE_REVIEW_RESET,
-  PRODUCT_DETAILS_RESET,
 } from "../constants/productConstants";
 import { Link } from "react-router-dom";
 import {
@@ -43,12 +42,12 @@ const ProductScreen = ({ match, history }) => {
   } = productCreateReview;
 
   useEffect(() => {
+    dispatch(listProductDetails(match.params.id));
     if (successProductReview) {
       setRating(0);
       setComment("");
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-    dispatch(listProductDetails(match.params.id));
   }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
